@@ -54,19 +54,23 @@
       },
       "details": {
         "title": "Add variable (2/2)",
-        "description": "Variable: {variable} (PLC type: {type}). Choose how it appears in Home Assistant. Unit, class and decimals apply to numbers only.",
+        "description": "Variable: {variable} (PLC type: {type}). Choose how it appears in Home Assistant. Unit, class and decimals apply to numbers only. Min, max and step apply to analog outputs (slider) only.",
         "data": {
           "kind": "Type",
           "name": "Name in Home Assistant",
           "unit": "Unit (e.g. °C, bar)",
           "device_class": "Device class",
-          "precision": "Decimals"
+          "precision": "Decimals",
+          "min_value": "Minimum value (analog output)",
+          "max_value": "Maximum value (analog output)",
+          "step": "Step (analog output)"
         }
       }
     },
     "error": {
       "empty": "Name and PLC variable name are required.",
-      "duplicate": "This variable is already added with this type."
+      "duplicate": "This variable is already added with this type.",
+      "bad_range": "Minimum must be below maximum and step above 0."
     }
   }
 }

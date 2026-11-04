@@ -26,10 +26,13 @@ from .const import (
     CONF_DEVICE_CLASS,
     CONF_INTERVAL_MS,
     CONF_KIND,
+    CONF_MAX,
+    CONF_MIN,
     CONF_MODEL,
     CONF_NAME,
     CONF_PATH,
     CONF_PRECISION,
+    CONF_STEP,
     CONF_UNIT,
     CONF_VARIABLE,
     CONF_VARIABLES,
@@ -38,6 +41,7 @@ from .const import (
     DEFAULT_PORT,
     DOMAIN,
     KIND_BINARY_SENSOR,
+    KIND_NUMBER,
     KIND_SENSOR,
     KIND_SWITCH,
 )
@@ -47,6 +51,7 @@ KIND_LABELS = {
     KIND_BINARY_SENSOR: "Input (on/off)",
     KIND_SENSOR: "Number (temperature, pressure, ...)",
     KIND_SWITCH: "Output (on/off, controllable)",
+    KIND_NUMBER: "Analog output (slider, e.g. 0-100 %)",
 }
 DEVICE_CLASSES = [
     "none",
@@ -74,6 +79,13 @@ async def _probe(host: str, port: int, user: str, password: str) -> str:
     if MODEL_VAR not in data:
         raise AmitError("station did not return its type (wrong user/password?)")
     return str(data[MODEL_VAR])
+
+
+def _free() -> NumberSelector:
+    """Any decimal number, typed by hand."""
+    return NumberSelector(
+        NumberSelectorConfig(min=-1000000, max=1000000, step="any", mode=NumberSelectorMode.BOX)
+    )
 
 
 def _num(minimum, maximum) -> NumberSelector:
@@ -250,6 +262,11 @@ class AmitOptionsFlow(OptionsFlow):
             kind = user_input[CONF_KIND]
             if not name:
                 errors["base"] = "empty"
+            elif kind == KIND_NUMBER and (
+                float(user_input.get(CONF_MIN, 0)) >= float(user_input.get(CONF_MAX, 100))
+                or float(user_input.get(CONF_STEP, 1)) <= 0
+            ):
+                errors["base"] = "bad_range"
             elif any(v[CONF_VARIABLE] == variable and v[CONF_KIND] == kind for v in self._vars):
                 errors["base"] = "duplicate"
             else:
@@ -262,6 +279,9 @@ class AmitOptionsFlow(OptionsFlow):
                         CONF_UNIT: user_input.get(CONF_UNIT, "").strip(),
                         CONF_DEVICE_CLASS: None if dev_class == "none" else dev_class,
                         CONF_PRECISION: int(user_input.get(CONF_PRECISION, 1)),
+                        CONF_MIN: float(user_input.get(CONF_MIN, 0)),
+                        CONF_MAX: float(user_input.get(CONF_MAX, 100)),
+                        CONF_STEP: float(user_input.get(CONF_STEP, 1)),
                     }
                 )
                 self._pending = None
@@ -285,6 +305,9 @@ class AmitOptionsFlow(OptionsFlow):
                     SelectSelectorConfig(options=DEVICE_CLASSES, mode=SelectSelectorMode.DROPDOWN)
                 ),
                 vol.Optional(CONF_PRECISION, default=d.get(CONF_PRECISION, 1)): _num(0, 6),
+                vol.Optional(CONF_MIN, default=d.get(CONF_MIN, 0)): _free(),
+                vol.Optional(CONF_MAX, default=d.get(CONF_MAX, 100)): _free(),
+                vol.Optional(CONF_STEP, default=d.get(CONF_STEP, 1)): _free(),
             }
         )
         return self.async_show_form(

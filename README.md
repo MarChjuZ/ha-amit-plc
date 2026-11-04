@@ -1,3 +1,5 @@
+![AMiT](https://raw.githubusercontent.com/MarChjuZ/ha-amit-plc/main/custom_components/amit_plc/brand/icon@2x.png)
+
 # AMiT PLC (WebSocket) for Home Assistant
 
 Home Assistant integration for **AMiT** stations (ADiS, AMiNi, AMR-CP… programmed in DetStudio)
@@ -47,3 +49,8 @@ Settings → Devices & services → **AMiT PLC** → **Configure**:
   kintamųjų vienoje užklausoje nerekomenduojama.
 * Jei kintamasis nerastas PLC, objektas rodo `unavailable`, o žurnale (`amit_plc`) matysite, kuris.
 * `manifest.json` laukuose `documentation` ir `issue_tracker` pakeiskite `MarChjuZ` savo GitHub vartotojo vardu.
+
+## Analog output (slider, e.g. dimmable lamp 0–100 %)
+
+When adding a variable choose type **Analog output (slider)** and type the minimum, maximum and step by hand
+(default 0 / 100 / 1). The entity appears as a `number` slider; the value is written to the PLC variable and read back every cycle.

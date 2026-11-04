@@ -54,19 +54,23 @@
       },
       "details": {
         "title": "Pridėti kintamąjį (2/2)",
-        "description": "Kintamasis: {variable} (PLC tipas: {type}). Pasirinkite, kaip jis rodomas Home Assistant. Vienetas, klasė ir skaitmenys taikomi tik skaičiams.",
+        "description": "Kintamasis: {variable} (PLC tipas: {type}). Pasirinkite, kaip jis rodomas Home Assistant. Vienetas, klasė ir skaitmenys taikomi tik skaičiams. Min., maks. ir žingsnis galioja tik analoginiam išėjimui (slankikliui).",
         "data": {
           "kind": "Tipas",
           "name": "Pavadinimas Home Assistant",
           "unit": "Vienetas (pvz. °C, bar)",
           "device_class": "Klasė",
-          "precision": "Skaitmenys po kablelio"
+          "precision": "Skaitmenys po kablelio",
+          "min_value": "Minimali reikšmė (analoginiam išėjimui)",
+          "max_value": "Maksimali reikšmė (analoginiam išėjimui)",
+          "step": "Žingsnis (analoginiam išėjimui)"
         }
       }
     },
     "error": {
       "empty": "Būtina įvesti pavadinimą ir PLC kintamojo vardą.",
-      "duplicate": "Šis kintamasis su tokiu tipu jau pridėtas."
+      "duplicate": "Šis kintamasis su tokiu tipu jau pridėtas.",
+      "bad_range": "Minimali reikšmė turi būti mažesnė už maksimalią, žingsnis didesnis už 0."
     }
   }
 }

@@ -2,7 +2,7 @@
 
 DOMAIN = "amit_plc"
 SIGNAL = "amit_plc_update"
-PLATFORMS = ["binary_sensor", "sensor", "switch"]
+PLATFORMS = ["binary_sensor", "number", "sensor", "switch"]
 
 CONF_PATH = "path"
 CONF_INTERVAL_MS = "interval_ms"
@@ -14,11 +14,15 @@ CONF_UNIT = "unit"
 CONF_DEVICE_CLASS = "device_class"
 CONF_PRECISION = "precision"
 CONF_MODEL = "model"
+CONF_MIN = "min_value"
+CONF_MAX = "max_value"
+CONF_STEP = "step"
 CONF_CONTROLLER_NAME = "name"
 
 KIND_BINARY_SENSOR = "binary_sensor"
 KIND_SENSOR = "sensor"
 KIND_SWITCH = "switch"
+KIND_NUMBER = "number"
 
 DEFAULT_PORT = 80
 DEFAULT_PATH = "/"

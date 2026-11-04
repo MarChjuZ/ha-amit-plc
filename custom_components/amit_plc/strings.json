@@ -1,0 +1,71 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "AMiT PLC (WebSocket)",
+        "description": "Connect to the AMiT station. Variables are added afterwards: Settings → Devices & services → AMiT PLC → Configure.",
+        "data": {
+          "host": "PLC IP address",
+          "port": "WebSocket port",
+          "username": "User (only if users are defined in DetStudio)",
+          "password": "Password",
+          "interval_ms": "Polling interval (ms)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the PLC (check IP, port, user/password)."
+    },
+    "abort": {
+      "already_configured": "This PLC is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AMiT PLC variables",
+        "description": "Current variables:\n{variables}\n\nPolling interval: {interval} ms\n\nChoose an action. Press \"Save and apply\" when finished.",
+        "menu_options": {
+          "add_variable": "Add variable",
+          "remove_variable": "Remove variables",
+          "interval": "Change polling interval",
+          "save": "Save and apply"
+        }
+      },
+      "add_variable": {
+        "title": "Add variable (1/2)",
+        "description": "Pick a variable from the PLC list ({count} found) or type its name exactly as in DetStudio.",
+        "data": {
+          "variable": "PLC variable"
+        }
+      },
+      "remove_variable": {
+        "title": "Remove variables",
+        "data": {
+          "remove": "Select variables to remove"
+        }
+      },
+      "interval": {
+        "title": "Polling interval",
+        "data": {
+          "interval_ms": "Polling interval (ms)"
+        }
+      },
+      "details": {
+        "title": "Add variable (2/2)",
+        "description": "Variable: {variable} (PLC type: {type}). Choose how it appears in Home Assistant. Unit, class and decimals apply to numbers only.",
+        "data": {
+          "kind": "Type",
+          "name": "Name in Home Assistant",
+          "unit": "Unit (e.g. °C, bar)",
+          "device_class": "Device class",
+          "precision": "Decimals"
+        }
+      }
+    },
+    "error": {
+      "empty": "Name and PLC variable name are required.",
+      "duplicate": "This variable is already added with this type."
+    }
+  }
+}

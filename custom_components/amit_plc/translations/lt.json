@@ -1,0 +1,71 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "AMiT PLC (WebSocket)",
+        "description": "Prisijunkite prie AMiT stoties. Kintamuosius pridėsite vėliau: Nustatymai → Įrenginiai ir paslaugos → AMiT PLC → Konfigūruoti.",
+        "data": {
+          "host": "PLC IP adresas",
+          "port": "WebSocket prievadas",
+          "username": "Vartotojas (tik jei DetStudio sukurti vartotojai)",
+          "password": "Slaptažodis",
+          "interval_ms": "Apklausos intervalas (ms)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nepavyko prisijungti prie PLC (patikrinkite IP, prievadą, vartotoją ir slaptažodį)."
+    },
+    "abort": {
+      "already_configured": "Šis PLC jau sukonfigūruotas."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AMiT PLC kintamieji",
+        "description": "Dabartiniai kintamieji:\\n{variables}\\n\\nApklausos intervalas: {interval} ms\\n\\nPasirinkite veiksmą. Baigę spauskite „Išsaugoti ir pritaikyti“.",
+        "menu_options": {
+          "add_variable": "Pridėti kintamąjį",
+          "remove_variable": "Pašalinti kintamuosius",
+          "interval": "Keisti apklausos intervalą",
+          "save": "Išsaugoti ir pritaikyti"
+        }
+      },
+      "add_variable": {
+        "title": "Pridėti kintamąjį (1/2)",
+        "description": "Pasirinkite kintamąjį iš PLC sąrašo (rasta: {count}) arba įrašykite jo vardą tiksliai kaip DetStudio.",
+        "data": {
+          "variable": "PLC kintamasis"
+        }
+      },
+      "remove_variable": {
+        "title": "Pašalinti kintamuosius",
+        "data": {
+          "remove": "Pasirinkite, ką pašalinti"
+        }
+      },
+      "interval": {
+        "title": "Apklausos intervalas",
+        "data": {
+          "interval_ms": "Apklausos intervalas (ms)"
+        }
+      },
+      "details": {
+        "title": "Pridėti kintamąjį (2/2)",
+        "description": "Kintamasis: {variable} (PLC tipas: {type}). Pasirinkite, kaip jis rodomas Home Assistant. Vienetas, klasė ir skaitmenys taikomi tik skaičiams.",
+        "data": {
+          "kind": "Tipas",
+          "name": "Pavadinimas Home Assistant",
+          "unit": "Vienetas (pvz. °C, bar)",
+          "device_class": "Klasė",
+          "precision": "Skaitmenys po kablelio"
+        }
+      }
+    },
+    "error": {
+      "empty": "Būtina įvesti pavadinimą ir PLC kintamojo vardą.",
+      "duplicate": "Šis kintamasis su tokiu tipu jau pridėtas."
+    }
+  }
+}

@@ -24,12 +24,12 @@
     "step": {
       "init": {
         "title": "AMiT PLC kintamieji",
-        "description": "Dabartiniai kintamieji:\\n{variables}\\n\\nApklausos intervalas: {interval} ms\\n\\nPasirinkite veiksmą. Baigę spauskite „Išsaugoti ir pritaikyti“.",
+        "description": "Dabartiniai kintamieji:\n{variables}\n\nApklausos intervalas: {interval} ms\n\nPakeitimai išsisaugo automatiškai. Baigę spauskite „Atlikta“.",
         "menu_options": {
           "add_variable": "Pridėti kintamąjį",
           "remove_variable": "Pašalinti kintamuosius",
           "interval": "Keisti apklausos intervalą",
-          "save": "Išsaugoti ir pritaikyti"
+          "save": "Atlikta"
         }
       },
       "add_variable": {

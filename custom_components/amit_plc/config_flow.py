@@ -154,6 +154,13 @@ class AmitOptionsFlow(OptionsFlow):
                 )
             )
 
+    def _persist(self) -> None:
+        """Save right away, so closing the dialog never loses changes."""
+        self.hass.config_entries.async_update_entry(
+            self.config_entry,
+            options={CONF_VARIABLES: self._vars, CONF_INTERVAL_MS: self._interval},
+        )
+
     @staticmethod
     def _label(v: dict) -> str:
         return f"{v[CONF_NAME]}  [{v[CONF_VARIABLE]}, {KIND_LABELS[v[CONF_KIND]].split(' (')[0].lower()}]"
@@ -255,6 +262,7 @@ class AmitOptionsFlow(OptionsFlow):
                     }
                 )
                 self._pending = None
+                self._persist()
                 return await self.async_step_init()
 
         vtype = (self._plc_vars or {}).get(variable, "")
@@ -288,6 +296,7 @@ class AmitOptionsFlow(OptionsFlow):
         if user_input is not None:
             drop = {int(i) for i in user_input.get("remove", [])}
             self._vars = [v for i, v in enumerate(self._vars) if i not in drop]
+            self._persist()
             return await self.async_step_init()
         schema = vol.Schema(
             {
@@ -305,6 +314,7 @@ class AmitOptionsFlow(OptionsFlow):
     async def async_step_interval(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             self._interval = int(user_input[CONF_INTERVAL_MS])
+            self._persist()
             return await self.async_step_init()
         schema = vol.Schema(
             {vol.Required(CONF_INTERVAL_MS, default=self._interval): _num(20, 60000)}

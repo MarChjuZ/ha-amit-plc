@@ -24,12 +24,12 @@
     "step": {
       "init": {
         "title": "AMiT PLC variables",
-        "description": "Current variables:\n{variables}\n\nPolling interval: {interval} ms\n\nChoose an action. Press \"Save and apply\" when finished.",
+        "description": "Current variables:\n{variables}\n\nPolling interval: {interval} ms\n\nChanges are saved automatically. Press \"Done\" to close.",
         "menu_options": {
           "add_variable": "Add variable",
           "remove_variable": "Remove variables",
           "interval": "Change polling interval",
-          "save": "Save and apply"
+          "save": "Done"
         }
       },
       "add_variable": {

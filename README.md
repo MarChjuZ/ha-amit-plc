@@ -46,4 +46,4 @@ Settings → Devices & services → **AMiT PLC** → **Configure**:
 * Naudojamas JSON režimas (tekstiniai kadrai). Vienas atsakymas stotyje ribojamas ~16 kB, todėl labai daug
   kintamųjų vienoje užklausoje nerekomenduojama.
 * Jei kintamasis nerastas PLC, objektas rodo `unavailable`, o žurnale (`amit_plc`) matysite, kuris.
-* `manifest.json` laukuose `documentation` ir `issue_tracker` pakeiskite `YOUR_GITHUB_USER` savo GitHub vartotojo vardu.
+* `manifest.json` laukuose `documentation` ir `issue_tracker` pakeiskite `MarChjuZ` savo GitHub vartotojo vardu.

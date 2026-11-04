@@ -3,7 +3,29 @@
     "step": {
       "user": {
         "title": "AMiT PLC (WebSocket)",
-        "description": "Prisijunkite prie AMiT stoties. Galite pridėti kelis valdiklius. Kintamuosius pridėsite vėliau: Nustatymai → Įrenginiai ir paslaugos → AMiT PLC → Konfigūruoti.",
+        "description": "Pridėkite valdiklį. Galite pridėti kelis. Kintamieji pridedami vėliau: Settings → Devices & services → AMiT PLC → Configure.",
+        "menu_options": {
+          "scan": "Skenuoti tinklą ir pasirinkti iš sąrašo",
+          "manual": "Įvesti IP adresą ranka"
+        }
+      },
+      "scan": {
+        "title": "Tinklo skenavimas",
+        "description": "Ieško AMiT stočių vietiniame tinkle (užtrunka kelias sekundes). Jau pridėti valdikliai praleidžiami.",
+        "data": {
+          "port": "WebSocket prievadas paieškai"
+        }
+      },
+      "pick": {
+        "title": "Rasti valdikliai",
+        "description": "Rasta: {count}. Pasirinkite, kurį pridėti; IP ir prievadas bus užpildyti kitame lange.",
+        "data": {
+          "host": "Valdiklis"
+        }
+      },
+      "manual": {
+        "title": "AMiT PLC (WebSocket)",
+        "description": "Prisijunkite prie AMiT stoties.",
         "data": {
           "host": "PLC IP adresas",
           "port": "WebSocket prievadas",
@@ -15,7 +37,8 @@
       }
     },
     "error": {
-      "cannot_connect": "Nepavyko prisijungti prie PLC (patikrinkite IP, prievadą, vartotoją ir slaptažodį)."
+      "cannot_connect": "Nepavyko prisijungti prie PLC (patikrinkite IP, prievadą, vartotoją ir slaptažodį).",
+      "none_found": "Šiuo prievadu vietiniame tinkle AMiT stočių nerasta. Patikrinkite prievadą arba įveskite adresą ranka."
     },
     "abort": {
       "already_configured": "Šis PLC (IP ir prievadas) jau sukonfigūruotas."

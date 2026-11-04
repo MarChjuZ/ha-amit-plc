@@ -1,11 +1,15 @@
 """Config flow and options flow (add / remove variables from the UI)."""
 from __future__ import annotations
 
+import asyncio
+import ipaddress
+import json
 from typing import Any
 
 import aiohttp
 import voluptuous as vol
 
+from homeassistant.components import network
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
 from homeassistant.core import callback
@@ -81,6 +85,61 @@ async def _probe(host: str, port: int, user: str, password: str) -> str:
     return str(data[MODEL_VAR])
 
 
+async def _probe_host(session: aiohttp.ClientSession, host: str, port: int) -> str | None:
+    """Return the station type, "" if it is a WebSocket device needing a login, None if nothing there."""
+    try:
+        async with asyncio.timeout(1.5):
+            ws = await session.ws_connect(f"ws://{host}:{port}{DEFAULT_PATH}")
+            try:
+                await ws.send_str(json.dumps({"command": "read-req", "items": [{"name": MODEL_VAR}]}))
+                reply = await ws.receive()
+            finally:
+                await ws.close()
+        if reply.type is not aiohttp.WSMsgType.TEXT:
+            return None
+        data = json.loads(reply.data)
+    except (aiohttp.ClientError, OSError, TimeoutError, ValueError):
+        return None
+    if not isinstance(data, dict) or "command" not in data:
+        return None
+    for item in data.get("items", []):
+        if item.get("name") == MODEL_VAR and item.get("status", 1) == 0:
+            return str(item.get("value", ""))
+    return ""
+
+
+async def _local_hosts(hass) -> list[str]:
+    """All IPv4 addresses of the local networks (/24 at most), without our own."""
+    hosts: list[str] = []
+    for adapter in await network.async_get_adapters(hass):
+        if not adapter["enabled"]:
+            continue
+        for ip4 in adapter["ipv4"]:
+            prefix = max(int(ip4["network_prefix"]), 24)
+            net = ipaddress.ip_network(f"{ip4['address']}/{prefix}", strict=False)
+            hosts += [str(h) for h in net.hosts() if str(h) != ip4["address"]]
+    return list(dict.fromkeys(hosts))
+
+
+async def scan_network(hass, port: int, skip: set[str], hosts: list[str] | None = None) -> dict[str, str]:
+    """Find AMiT stations on the local network: {host: station type ('' = login needed)}."""
+    if hosts is None:
+        hosts = await _local_hosts(hass)
+    todo = [h for h in hosts if f"{h}:{port}" not in skip]
+    sem = asyncio.Semaphore(64)
+    found: dict[str, str] = {}
+    async with aiohttp.ClientSession() as session:
+
+        async def one(host: str) -> None:
+            async with sem:
+                res = await _probe_host(session, host, port)
+            if res is not None:
+                found[host] = res
+
+        await asyncio.gather(*(one(h) for h in todo))
+    return dict(sorted(found.items(), key=lambda kv: tuple(int(p) for p in kv[0].split("."))))
+
+
 def _free() -> NumberSelector:
     """Any decimal number, typed by hand."""
     return NumberSelector(
@@ -97,12 +156,51 @@ def _num(minimum, maximum) -> NumberSelector:
 class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 2
 
+    def __init__(self) -> None:
+        self._found: dict[str, str] = {}
+        self._port = DEFAULT_PORT
+        self._prefill: dict[str, Any] = {}
+
     @staticmethod
     @callback
     def async_get_options_flow(config_entry) -> AmitOptionsFlow:
         return AmitOptionsFlow()
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        return self.async_show_menu(step_id="user", menu_options=["scan", "manual"])
+
+    async def async_step_scan(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            self._port = int(user_input[CONF_PORT])
+            skip = {e.unique_id for e in self._async_current_entries() if e.unique_id}
+            self._found = await scan_network(self.hass, self._port, skip)
+            if self._found:
+                return await self.async_step_pick()
+            errors["base"] = "none_found"
+        schema = vol.Schema({vol.Required(CONF_PORT, default=self._port): _num(1, 65535)})
+        return self.async_show_form(step_id="scan", data_schema=schema, errors=errors)
+
+    async def async_step_pick(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        if user_input is not None:
+            self._prefill = {CONF_HOST: user_input[CONF_HOST], CONF_PORT: self._port}
+            return await self.async_step_manual()
+        options = [
+            {"value": h, "label": f"{h}  ({t or 'WebSocket device, login required'})"}
+            for h, t in self._found.items()
+        ]
+        schema = vol.Schema(
+            {
+                vol.Required(CONF_HOST): SelectSelector(
+                    SelectSelectorConfig(options=options, mode=SelectSelectorMode.LIST)
+                )
+            }
+        )
+        return self.async_show_form(
+            step_id="pick", data_schema=schema, description_placeholders={"count": str(len(options))}
+        )
+
+    async def async_step_manual(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors: dict[str, str] = {}
         if user_input is not None:
             host = user_input[CONF_HOST].strip()
@@ -132,7 +230,7 @@ class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
                     },
                 )
 
-        defaults = user_input or {}
+        defaults = user_input or self._prefill
         schema = vol.Schema(
             {
                 vol.Optional(CONF_CONTROLLER_NAME, default=defaults.get(CONF_CONTROLLER_NAME, "")): str,
@@ -147,7 +245,7 @@ class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
                 ): _num(20, 60000),
             }
         )
-        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+        return self.async_show_form(step_id="manual", data_schema=schema, errors=errors)
 
 
 class AmitOptionsFlow(OptionsFlow):

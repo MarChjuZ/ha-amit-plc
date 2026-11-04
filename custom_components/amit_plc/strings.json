@@ -3,7 +3,29 @@
     "step": {
       "user": {
         "title": "AMiT PLC (WebSocket)",
-        "description": "Connect to an AMiT station. You can add several controllers. Variables are added afterwards: Settings → Devices & services → AMiT PLC → Configure.",
+        "description": "Add a controller. You can add several. Variables are added afterwards: Settings → Devices & services → AMiT PLC → Configure.",
+        "menu_options": {
+          "scan": "Scan network and choose from the list",
+          "manual": "Enter IP address manually"
+        }
+      },
+      "scan": {
+        "title": "Scan network",
+        "description": "Searches the local network for AMiT stations (takes a few seconds). Stations that are already added are skipped.",
+        "data": {
+          "port": "WebSocket port to search"
+        }
+      },
+      "pick": {
+        "title": "Found controllers",
+        "description": "Found {count}. Choose the one to add; IP and port are filled in on the next screen.",
+        "data": {
+          "host": "Controller"
+        }
+      },
+      "manual": {
+        "title": "AMiT PLC (WebSocket)",
+        "description": "Connect to an AMiT station.",
         "data": {
           "host": "PLC IP address",
           "port": "WebSocket port",
@@ -15,7 +37,8 @@
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect to the PLC (check IP, port, user/password)."
+      "cannot_connect": "Cannot connect to the PLC (check IP, port, user/password).",
+      "none_found": "No AMiT station found on the local network with this port. Check the port or enter the address manually."
     },
     "abort": {
       "already_configured": "This PLC (IP and port) is already configured."

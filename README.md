@@ -54,3 +54,8 @@ Settings → Devices & services → **AMiT PLC** → **Configure**:
 
 When adding a variable choose type **Analog output (slider)** and type the minimum, maximum and step by hand
 (default 0 / 100 / 1). The entity appears as a `number` slider; the value is written to the PLC variable and read back every cycle.
+
+## Adding a controller: network scan
+
+*Add integration → AMiT PLC* offers **Scan network** (searches the local /24 network on the chosen WebSocket port,
+default 80, and lists the stations found) or **Enter IP address manually**.

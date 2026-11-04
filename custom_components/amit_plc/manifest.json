@@ -3,11 +3,13 @@
   "name": "AMiT PLC (WebSocket)",
   "codeowners": [],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": [
+    "network"
+  ],
   "documentation": "https://github.com/MarChjuZ/ha-amit-plc",
   "integration_type": "hub",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/MarChjuZ/ha-amit-plc/issues",
   "requirements": [],
-  "version": "2.3.0"
+  "version": "2.4.1"
 }

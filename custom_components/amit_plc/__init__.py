@@ -8,7 +8,7 @@ import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, entity_registry as er
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
@@ -38,6 +38,26 @@ type AmitConfigEntry = ConfigEntry[AmitRuntime]
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    return True
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """v1 -> v2: several controllers allowed, entity unique IDs now contain the entry ID."""
+    if entry.version == 1:
+        old_prefix = "amit_plc_"
+
+        def _new_unique_id(reg_entry: er.RegistryEntry) -> dict | None:
+            uid = reg_entry.unique_id
+            if uid.startswith(old_prefix):
+                return {"new_unique_id": f"{entry.entry_id}_{uid[len(old_prefix):]}"}
+            return None
+
+        await er.async_migrate_entries(hass, entry.entry_id, _new_unique_id)
+        hass.config_entries.async_update_entry(
+            entry,
+            unique_id=f"{entry.data[CONF_HOST]}:{entry.data[CONF_PORT]}",
+            version=2,
+        )
     return True
 
 

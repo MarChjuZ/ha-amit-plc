@@ -42,7 +42,7 @@ Settings → Devices & services → **AMiT PLC** → **Configure**:
 
 ## Pastabos
 
-* Palaikomas vienas PLC (viena integracija).
+* Galima pridėti **kelis valdiklius** (Add integration kiekvienam IP/prievadui; kiekvienam galima suteikti pavadinimą, pvz. „Katilinė“). Kintamųjų vardus kiekvienam valdikliui pridedate atskirai.
 * Naudojamas JSON režimas (tekstiniai kadrai). Vienas atsakymas stotyje ribojamas ~16 kB, todėl labai daug
   kintamųjų vienoje užklausoje nerekomenduojama.
 * Jei kintamasis nerastas PLC, objektas rodo `unavailable`, o žurnale (`amit_plc`) matysite, kuris.

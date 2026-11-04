@@ -16,8 +16,7 @@ class AmitEntity(Entity):
         self._hub = entry.runtime_data.hub
         self._variable = variable
         self._attr_name = name
-        # same format as the earlier YAML version: existing entities keep their IDs
-        self._attr_unique_id = f"amit_plc_{kind}_{variable}"
+        self._attr_unique_id = f"{entry.entry_id}_{kind}_{variable}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=entry.title,

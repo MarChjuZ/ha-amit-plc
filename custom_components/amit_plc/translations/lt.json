@@ -3,13 +3,14 @@
     "step": {
       "user": {
         "title": "AMiT PLC (WebSocket)",
-        "description": "Prisijunkite prie AMiT stoties. Kintamuosius pridėsite vėliau: Nustatymai → Įrenginiai ir paslaugos → AMiT PLC → Konfigūruoti.",
+        "description": "Prisijunkite prie AMiT stoties. Galite pridėti kelis valdiklius. Kintamuosius pridėsite vėliau: Nustatymai → Įrenginiai ir paslaugos → AMiT PLC → Konfigūruoti.",
         "data": {
           "host": "PLC IP adresas",
           "port": "WebSocket prievadas",
           "username": "Vartotojas (tik jei DetStudio sukurti vartotojai)",
           "password": "Slaptažodis",
-          "interval_ms": "Apklausos intervalas (ms)"
+          "interval_ms": "Apklausos intervalas (ms)",
+          "name": "Pavadinimas (pvz. Katilinė)"
         }
       }
     },
@@ -17,7 +18,7 @@
       "cannot_connect": "Nepavyko prisijungti prie PLC (patikrinkite IP, prievadą, vartotoją ir slaptažodį)."
     },
     "abort": {
-      "already_configured": "Šis PLC jau sukonfigūruotas."
+      "already_configured": "Šis PLC (IP ir prievadas) jau sukonfigūruotas."
     }
   },
   "options": {

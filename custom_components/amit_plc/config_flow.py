@@ -22,6 +22,7 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
+    CONF_CONTROLLER_NAME,
     CONF_DEVICE_CLASS,
     CONF_INTERVAL_MS,
     CONF_KIND,
@@ -82,7 +83,7 @@ def _num(minimum, maximum) -> NumberSelector:
 
 
 class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
-    VERSION = 1
+    VERSION = 2
 
     @staticmethod
     @callback
@@ -93,7 +94,7 @@ class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             host = user_input[CONF_HOST].strip()
-            await self.async_set_unique_id(host)
+            await self.async_set_unique_id(f"{host}:{int(user_input[CONF_PORT])}")
             self._abort_if_unique_id_configured()
             try:
                 model = await _probe(
@@ -105,8 +106,9 @@ class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
             except AmitError:
                 errors["base"] = "cannot_connect"
             else:
+                title = (user_input.get(CONF_CONTROLLER_NAME) or "").strip() or f"AMiT PLC {host}"
                 return self.async_create_entry(
-                    title=f"AMiT PLC {host}",
+                    title=title,
                     data={
                         CONF_HOST: host,
                         CONF_PORT: int(user_input[CONF_PORT]),
@@ -121,6 +123,7 @@ class AmitConfigFlow(ConfigFlow, domain=DOMAIN):
         defaults = user_input or {}
         schema = vol.Schema(
             {
+                vol.Optional(CONF_CONTROLLER_NAME, default=defaults.get(CONF_CONTROLLER_NAME, "")): str,
                 vol.Required(CONF_HOST, default=defaults.get(CONF_HOST, "192.168.1.190")): str,
                 vol.Required(CONF_PORT, default=defaults.get(CONF_PORT, DEFAULT_PORT)): _num(1, 65535),
                 vol.Optional(CONF_USERNAME, default=defaults.get(CONF_USERNAME, "")): str,

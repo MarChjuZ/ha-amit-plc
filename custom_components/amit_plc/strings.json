@@ -3,13 +3,14 @@
     "step": {
       "user": {
         "title": "AMiT PLC (WebSocket)",
-        "description": "Connect to the AMiT station. Variables are added afterwards: Settings → Devices & services → AMiT PLC → Configure.",
+        "description": "Connect to an AMiT station. You can add several controllers. Variables are added afterwards: Settings → Devices & services → AMiT PLC → Configure.",
         "data": {
           "host": "PLC IP address",
           "port": "WebSocket port",
           "username": "User (only if users are defined in DetStudio)",
           "password": "Password",
-          "interval_ms": "Polling interval (ms)"
+          "interval_ms": "Polling interval (ms)",
+          "name": "Controller name (e.g. Boiler room)"
         }
       }
     },
@@ -17,7 +18,7 @@
       "cannot_connect": "Cannot connect to the PLC (check IP, port, user/password)."
     },
     "abort": {
-      "already_configured": "This PLC is already configured."
+      "already_configured": "This PLC (IP and port) is already configured."
     }
   },
   "options": {

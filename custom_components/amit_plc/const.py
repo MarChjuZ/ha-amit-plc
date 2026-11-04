@@ -14,6 +14,7 @@ CONF_UNIT = "unit"
 CONF_DEVICE_CLASS = "device_class"
 CONF_PRECISION = "precision"
 CONF_MODEL = "model"
+CONF_CONTROLLER_NAME = "name"
 
 KIND_BINARY_SENSOR = "binary_sensor"
 KIND_SENSOR = "sensor"
